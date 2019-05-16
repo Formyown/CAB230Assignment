@@ -1,0 +1,448 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "swagger": "2.0",
+        "title": "CAB230 : Web Computing API",
+        "description": "This API is to be used during development of assignments for the QUT CAB230 Web Computing Unit. If you have any issues, please comment on Slack.",
+        "version": "1.0.0"
+    },
+    "servers": [{
+        "url": "http://localhost:3000/"
+    }],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Registers a new user account",
+                "description": "This is your starting point.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "required": true,
+                                        "example": "demo-user@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "required": true,
+                                        "example": "demouserpassword"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "yay! you've successfully registered your user account :)"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "oops! It looks like that user already exists :("
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "Login with an existing user account",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "required": true,
+                                        "example": "demo-user@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "required": true,
+                                        "example": "demouserpassword"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1Nzg2LCJlbWFpbCI6ImRlbW8xMjM0QGdtYWlsLmNvbSJ9LCJpYXQiOjE1NTUzMjQ2MDIsImV4cCI6MTU1NTQxMTAwMn0.mo85iKuAQ_h8n8-6pkeNNs5CCnV0G8hScxhi_ml_Q6c"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "expires_in": {
+                                            "type": "intager",
+                                            "example": 86400
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "invalid login - bad password"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ]
+            }
+        },
+        "/search": {
+            "get": {
+                "description": "Search for Offence data",
+                "parameters": [{
+                        "name": "offence",
+                        "in": "query",
+                        "description": "Name of the Offence to search for",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "area",
+                        "in": "query",
+                        "description": "List of comma-separated Areas (LGAs) to filter search results by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "age",
+                        "in": "query",
+                        "description": "List of comma-separated Ages to filter search results by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "List of comma-separated Genders to filter search results by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "List of comma-separated Years to filter search results by",
+                        "required": false,
+                        "schema": {
+                            "type": "intager"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "List of comma-separated Months to filter search results by (1-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "intager"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "query": {
+                                            "type": "object",
+                                            "properties": {
+                                                "offence": {
+                                                    "type": "string",
+                                                    "example": "Homicide (Murder)"
+                                                }
+                                            }
+                                        },
+                                        "result": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "LGA": {
+                                                        "type": "string",
+                                                        "example": "Aurukun Shire Council"
+                                                    },
+                                                    "total": {
+                                                        "type": "intager",
+                                                        "example": 4
+                                                    },
+                                                    "lat": {
+                                                        "type": "decimal(10,8)",
+                                                        "example": -27.470812
+                                                    },
+                                                    "lng": {
+                                                        "type": "decimal(11,8)",
+                                                        "example": 153.022455
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "oops! it looks like you're missing the offence query parm"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "oh no! it looks like your authorization token is invalid..."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Search"
+                ]
+            }
+        },
+        "/offences": {
+            "get": {
+                "description": "List of offences to perform searches for",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "offences": {
+                                            "type": "array",
+                                            "example": [
+                                                "Advertising Prostitution",
+                                                "Armed Robbery"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Helpers"
+                ]
+            }
+        },
+        "/areas": {
+            "get": {
+                "description": "List of Areas to filter search results by",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "offences": {
+                                            "type": "array",
+                                            "example": [
+                                                "Aurukun Shire Council",
+                                                "Balonne Shire Council"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Helpers"
+                ]
+            }
+        },
+        "/ages": {
+            "get": {
+                "description": "List of Ages to filter search results by",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "offences": {
+                                            "type": "array",
+                                            "example": [
+                                                "Adult",
+                                                "Juvenile"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Helpers"
+                ]
+            }
+        },
+        "/genders": {
+            "get": {
+                "description": "List of Genders to filter search results by",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "offences": {
+                                            "type": "array",
+                                            "example": [
+                                                "Female",
+                                                "Male"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Helpers"
+                ]
+            }
+        },
+        "/years": {
+            "get": {
+                "description": "List of Years to filter search results by",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "offences": {
+                                            "type": "array",
+                                            "example": [
+                                                2001,
+                                                2002
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Helpers"
+                ]
+            }
+        }
+    },
+    "tags": [{
+            "name": "Authentication"
+        },
+        {
+            "name": "Search"
+        },
+        {
+            "name": "Helpers"
+        }
+    ]
+}

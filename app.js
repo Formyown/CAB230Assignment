@@ -115,98 +115,98 @@ app.post("/login", function (req, resp) {
 
 app.get("/search", function (req, resp) {
   //permission check
-  // var auth = req.headers['authorization'];
-  // console.log(auth)
-  // if (!auth) {
-  //   resp.status(401).josn({
-  //     "error": "oops! it looks like you're missing the authorization header"
-  //   });
-  //   return;
-
-  // }
-  // console.log(auth)
-  // if (auth.split(" ").length != 2 || auth.split(" ")[0] != "Bearer") {
-  //   resp.status(401).josn({
-  //     "message": "oh no! it looks like your authorization token is invalid..."
-  //   });
-  // }
-  // console.log(auth)
-  // jwt.verify(auth[1], "jwtsecret", function (err) {
-  //   if (err) {
-  //     resp.status(401).josn({
-  //       "message": "oh no! it looks like your authorization token is invalid..."
-  //     });
-  //     return;
-  //   }
-  //execute query
-  if (!req.query.offence) {
-    resp.status(400).josn({
-      "message": "oops! it looks like you're missing the offence query parm"
+  var auth = req.headers['authorization'];
+  console.log(auth)
+  if (!auth) {
+    resp.status(401).josn({
+      "error": "oops! it looks like you're missing the authorization header"
     });
     return;
+
   }
-
-  req.db.query(
-    `select offence_columns.column from offence_columns where pretty in (${req.query.offence.split(",").map(i => req.db.escape(i)).join(", ")})`,
-    function (err, result) {
-      if (err) {
-        console.error(e);
-        resp.status(500).josn({
-          error: err
-        });
-        return;
-      }
-      console.log("Search offence_columns: " + JSON.stringify(result));
-
-      var query =
-        'select count(o.id) as "total", o.area as "LGA", a.lat, a.lng from offences o, areas a where ';
-      var where = ["o.area = a.area"];
-      if(where.length == 0){
-        
-      }
-      result.map(i => i.column).forEach(i => where.push(`${i} = 1`));
-
-      if (req.query.area) {
-        where.push(req.query.area.split(',').map(i => `area = ${req.db.escape(i)}`).join(" or "))
-      }
-      if (req.query.age) {
-        where.push(`age in (${req.query.age.split(",").map(i => req.db.escape(i)).join(", ")})`);
-      }
-      if (req.query.gender) {
-        where.push(`gender in (${req.query.gender.split(",").map(i => req.db.escape(i)).join(", ")})`);
-      }
-      if (req.query.year) {
-        where.push(`year in (${req.query.year.split(",").map(i => req.db.escape(i)).join(", ")})`);
-      }
-      if (req.query.month) {
-        where.push(`month in (${req.query.month.split(",").map(i => req.db.escape(i)).join(", ")})`);
-      }
-      console.log(where.map(i => i.query))
-      query += where.join(" and ") + " group by o.area, a.lat, a.lng";
-      console.log("Search sql: " + query);
-      var args = [];
-
-      where.forEach(i => {
-        if (i.args) args.push(i.args);
+  console.log(auth)
+  if (auth.split(" ").length != 2 || auth.split(" ")[0] != "Bearer") {
+    resp.status(401).josn({
+      "message": "oh no! it looks like your authorization token is invalid..."
+    });
+  }
+  console.log(auth)
+  jwt.verify(auth[1], "jwtsecret", function (err) {
+    if (err) {
+      resp.status(401).josn({
+        "message": "oh no! it looks like your authorization token is invalid..."
       });
-      console.log(args);
-      req.db.query(query, args, function (err, result) {
+      return;
+    }
+    //execute query
+    if (!req.query.offence) {
+      resp.status(400).josn({
+        "message": "oops! it looks like you're missing the offence query parm"
+      });
+      return;
+    }
+
+    req.db.query(
+      `select offence_columns.column from offence_columns where pretty in (${req.query.offence.split(",").map(i => req.db.escape(i)).join(", ")})`,
+      function (err, result) {
         if (err) {
-          resp.status(500).json({
+          console.error(e);
+          resp.status(500).josn({
             error: err
           });
           return;
         }
-        console.log("Search result: " + JSON.stringify(result));
-        resp.json({
-          query: req.query,
-          result
-        });
-      });
-    }
-  );
+        console.log("Search offence_columns: " + JSON.stringify(result));
 
-  // })
+        var query =
+          'select count(o.id) as "total", o.area as "LGA", a.lat, a.lng from offences o, areas a where ';
+        var where = ["o.area = a.area"];
+        if (where.length == 0) {
+
+        }
+        result.map(i => i.column).forEach(i => where.push(`${i} = 1`));
+
+        if (req.query.area) {
+          where.push(req.query.area.split(',').map(i => `area = ${req.db.escape(i)}`).join(" or "))
+        }
+        if (req.query.age) {
+          where.push(`age in (${req.query.age.split(",").map(i => req.db.escape(i)).join(", ")})`);
+        }
+        if (req.query.gender) {
+          where.push(`gender in (${req.query.gender.split(",").map(i => req.db.escape(i)).join(", ")})`);
+        }
+        if (req.query.year) {
+          where.push(`year in (${req.query.year.split(",").map(i => req.db.escape(i)).join(", ")})`);
+        }
+        if (req.query.month) {
+          where.push(`month in (${req.query.month.split(",").map(i => req.db.escape(i)).join(", ")})`);
+        }
+        console.log(where.map(i => i.query))
+        query += where.join(" and ") + " group by o.area, a.lat, a.lng";
+        console.log("Search sql: " + query);
+        var args = [];
+
+        where.forEach(i => {
+          if (i.args) args.push(i.args);
+        });
+        console.log(args);
+        req.db.query(query, args, function (err, result) {
+          if (err) {
+            resp.status(500).json({
+              error: err
+            });
+            return;
+          }
+          console.log("Search result: " + JSON.stringify(result));
+          resp.json({
+            query: req.query,
+            result
+          });
+        });
+      }
+    );
+
+  })
 });
 
 /** Helpers **/

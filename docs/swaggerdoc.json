@@ -3,7 +3,7 @@
     "info": {
         "swagger": "2.0",
         "title": "CAB230 : Web Computing API",
-        "description": "This API is to be used during development of assignments for the QUT CAB230 Web Computing Unit. If you have any issues, please comment on Slack.",
+        "description": "This API is to be used during development of assignments for the QUT CAB230 Web Computing Unit.",
         "version": "1.0.0"
     },
     "servers": [{
